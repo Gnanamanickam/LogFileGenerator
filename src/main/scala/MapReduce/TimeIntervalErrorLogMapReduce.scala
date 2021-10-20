@@ -69,17 +69,6 @@ object TimeIntervalErrorLogMapReduce {
     }
   }
 
-  class SortComparator extends WritableComparator(classOf[Text], true) {
-
-    override def compare(x: WritableComparable[_], y: WritableComparable[_]): Int = {
-      val value1 = x.toString
-      val value2 = y.toString
-
-      value2.compareTo(value1)
-    }
-
-  }
-
   class SumReader2 extends Reducer[Text, Text, Text, Text] {
     override def reduce(key: Text, values: Iterable[Text], context: Reducer[Text, Text, Text, Text]#Context): Unit = {
       logger.info("Set the key value pair in the reducer")
@@ -139,16 +128,15 @@ object TimeIntervalErrorLogMapReduce {
     System.exit(if (job2.waitForCompletion(true)) 0 else 1)
   }
 
+  //Comparator to sort in descending order
+  class SortComparator extends WritableComparator(classOf[Text], true) {
+
+    override def compare(x: WritableComparable[_], y: WritableComparable[_]): Int = {
+      val value1 = x.toString
+      val value2 = y.toString
+
+      value2.compareTo(value1)
+    }
+
 }
-
-//Comparator to sort in descending order
-class SortComparator extends WritableComparator(classOf[IntWritable], true) {
-
-  override def compare(x: WritableComparable[_], y: WritableComparable[_]): Int = {
-    val value1 = x.asInstanceOf[IntWritable]
-    val value2 = y.asInstanceOf[IntWritable]
-
-    value2.compareTo(value1)
   }
-
-}

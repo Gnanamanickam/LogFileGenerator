@@ -8,17 +8,20 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
+import org.apache.hadoop.io.{IntWritable, Text}
+import org.apache.hadoop.mapreduce.Mapper
 import org.apache.hadoop.util.ToolRunner
 
 import scala.io.Source.*
 
 class LogFileGeneratorTest extends AnyFlatSpec with Matchers {
 
-  val minLength = 10
-  val maxLength = 10
-  val randomSeed = 1
+  val minLength = config.getInt("minLength")
+  val maxLength = config.getInt("maxLength")
+  val randomSeed = config.getInt("randomSeed")
   val lines = fromFile("data/sample.txt").getLines.toString()
   val rsg = RandomStringGenerator((minLength, maxLength), randomSeed)
+  val log = new Text()
 
   behavior of "Configuration Parameters Module"
 
@@ -59,6 +62,14 @@ class LogFileGeneratorTest extends AnyFlatSpec with Matchers {
   it should "generate a random string whose length is lesser than the min length" in {
     val generationStep = init(rsg)
     assert(generationStep._1.length shouldBe < (minLength))
+  }
+
+  test("Check if Mapper is created") {
+    logger.info("Check mapper")
+    context: Mapper[Object, Text, Text, IntWritable]#Context
+    log.set(lines)
+    context.write(log, count)
+    context shouldBe a[Mapper]
   }
 
 
