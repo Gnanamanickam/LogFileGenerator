@@ -14,6 +14,8 @@ val generexVersion = "1.0.2"
 resolvers += Resolver.jcenterRepo
 
 libraryDependencies ++= Seq(
+  "junit" % "junit" % "4.13.2",
+  "org.scalatestplus" %% "mockito-3-4" % "3.2.10.0" % "test",
   "ch.qos.logback" % "logback-core" % logbackVersion,
   "ch.qos.logback" % "logback-classic" % logbackVersion,
   "org.slf4j" % "slf4j-api" % sfl4sVersion,
