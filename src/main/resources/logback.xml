@@ -1,27 +1,31 @@
 <configuration scan="true" scanPeriod="60 seconds" trace="true">
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
 
-    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+    <appender name="FILE-ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <!-- Daily rollover -->
-            <fileNamePattern>log/LogFileGenerator.%d{yyyy-MM-dd}.log</fileNamePattern>
-
+            <fileNamePattern>log/CloudSimulator.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!-- Archived file can have a max size of 20MB -->
+            <maxFileSize>20MB</maxFileSize>
+            <!-- Once the file size goes beyond 5gb, old log files will get deleted -->
+            <totalSizeCap>5GB</totalSizeCap>
+            <!-- 100 days to keep the log files -->
             <maxHistory>100</maxHistory>
         </rollingPolicy>
 
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
     <!-- Configure so that it outputs to both console and log file -->
-    <root level="debug">
-        <appender-ref ref="FILE" />
+    <root level="INFO">
+        <appender-ref ref="FILE-ROLLING" />
         <appender-ref ref="STDOUT" />
     </root>
 </configuration>
