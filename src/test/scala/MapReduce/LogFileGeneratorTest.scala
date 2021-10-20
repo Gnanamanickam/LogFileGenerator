@@ -11,6 +11,7 @@ import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.{IntWritable, Text}
 import org.apache.hadoop.mapreduce.Mapper
 import org.apache.hadoop.util.ToolRunner
+import org.junit.Assert
 //import org.hamcrest.MatcherAssert.assertThat
 
 import scala.io.Source.*
@@ -21,7 +22,7 @@ class LogFileGeneratorTest extends AnyFlatSpec with Matchers {
   val maxLength = config.getInt("maxLength")
   val randomSeed = config.getInt("randomSeed")
 //  val lines = fromFile("data/sample.txt").getLines.toString()
-  val lines = "01:53:48.832 [scala-execution-context-global-15] INFO"
+  val lines = "01:52:34.402 [scala-execution-context-global-15] INFO"
   val rsg = RandomStringGenerator((minLength, maxLength), randomSeed)
   val log = new Text()
 
@@ -51,9 +52,9 @@ class LogFileGeneratorTest extends AnyFlatSpec with Matchers {
   }
 
 //   To check whether the seperator in the config file is same as the one expected
-//  def testConfigurationValues(): Unit ={
-//    assertEquals(" ",",", config.getString("separator"))
-//  }
+  def testConfigurationValues(): Unit ={
+    Assert.assertEquals(" ",",", config.getString("separator"))
+  }
 
   // To locate an instance of the pattern in the randomly generated string
   it should "locate an instance of the pattern in the generated string" in {
