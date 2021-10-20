@@ -37,8 +37,11 @@ object TimeIntervalErrorLogMapReduce {
       val startTime = LocalTime.parse(config.getString("startTime"))
       val endTime = LocalTime.parse(config.getString("endTime"))
       val matchString = LogFileUtils.checkRegexPatternMatch("regexPattern", stringArray(5))
+      //Split the array into timestamp without milliseconds in it
+      val time = (stringArray(0).split("\\.")(0))
+      //01:52:34.402
       if(! matchString.equals("Not Found") && timeStamp.isAfter(startTime) && timeStamp.isBefore(endTime) && token.contains("ERROR")) {
-        log.set(token)
+        log.set(time)
         context.write(log, count)
       }
     }

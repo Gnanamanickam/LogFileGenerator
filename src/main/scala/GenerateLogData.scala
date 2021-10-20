@@ -21,6 +21,7 @@ object GenerateLogData:
 
 //this is the main starting point for the log generator
 @main def runLogGenerator =
+
   import Generation.RSGStateMachine.*
   import Generation.*
   import HelperUtils.Parameters.*
