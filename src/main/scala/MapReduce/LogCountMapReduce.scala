@@ -11,12 +11,15 @@ import scala.collection.JavaConverters._
 
 import HelperUtils.{CreateLogger, LogFileUtils, ObtainConfigReference}
 
+// This class to to log the total count of log levels using Map reduce
 class LogCountMapReduce
 
 object LogCountMapReduce {
 
+  //logger to log the values for the class
   val logger = CreateLogger(classOf[LogCountMapReduce])
 
+  // To obtain config reference from application.conf
   val config = ObtainConfigReference("logConfig") match {
     case Some(value) => value
     case None => throw new RuntimeException("Cannot obtain a reference to the config data.")
@@ -27,6 +30,7 @@ object LogCountMapReduce {
     val count = new IntWritable(1)
     val log = new Text()
 
+    // To override the map function
     override def map(key: Object, value: Text, context: Mapper[Object, Text, Text, IntWritable]#Context): Unit = {
 //      logger.info("Converting the input string into itr")
 //      val itr = new StringTokenizer(value.toString)
@@ -34,7 +38,9 @@ object LogCountMapReduce {
 //          val regex = "/\b(?:INFO|WARN|ERROR||DEBUG)\b/gi"
 //          if(token.matches(regex)) {
       logger.info("Converting the input string into string Array using Regex Space Split")
+      // To split the string input into array
       val stringArray = value.toString.split(config.getString("logConfig.regexSpaceSplit"))
+      // To get the log level present in that position
       val token = stringArray(2)
           log.set(token)
           // Writing the log level with count to the context to send to reducer
@@ -45,6 +51,7 @@ object LogCountMapReduce {
 
 
   class SumReader extends Reducer[Text,IntWritable,Text,IntWritable] {
+    // To override the reduce function
     override def reduce(key: Text, values: Iterable[IntWritable], context: Reducer[Text, IntWritable, Text, IntWritable]#Context): Unit = {
       logger.info("Calculate the sum")
       // calculate the sum

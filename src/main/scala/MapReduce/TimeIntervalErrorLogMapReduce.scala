@@ -13,12 +13,15 @@ import HelperUtils.{CreateLogger, LogFileUtils, ObtainConfigReference}
 import java.time.LocalTime
 import scala.collection.JavaConverters.*
 
+// To find the error log count present inbetween the given time intervals .
 class TimeIntervalErrorLogMapReduce
 
 object TimeIntervalErrorLogMapReduce {
 
+  //logger to log the values for the class
   val logger = CreateLogger(classOf[TimeIntervalErrorLogMapReduce])
 
+  // To obtain config reference from application.conf
   val config = ObtainConfigReference("logConfig") match {
     case Some(value) => value
     case None => throw new RuntimeException("Cannot obtain a reference to the config data.")
@@ -29,13 +32,18 @@ object TimeIntervalErrorLogMapReduce {
     val count = new IntWritable(1)
     val log = new Text()
 
+    // To override the map function
     override def map(key: Object, value: Text, context: Mapper[Object, Text, Text, IntWritable]#Context): Unit = {
       logger.info("Converting the input string into string Array using Regex Space Split")
+      // To split the string input into array
       val stringArray = value.toString.split(config.getString("logConfig.regexSpaceSplit"))
+      // To get the log level present in that position
       val token = stringArray(2)
+      // To get the timestamp from the input given for that line
       val timeStamp = LocalTime.parse(stringArray(0))
       val startTime = LocalTime.parse(config.getString("startTime"))
       val endTime = LocalTime.parse(config.getString("endTime"))
+      // To check whether the string matches the regex pattern
       val matchString = LogFileUtils.checkRegexPatternMatch("regexPattern", stringArray(5))
       //Split the array into timestamp without milliseconds in it
       val time = (stringArray(0).split("\\.")(0))
@@ -48,6 +56,7 @@ object TimeIntervalErrorLogMapReduce {
   }
 
   class SumReader extends Reducer[Text, IntWritable, Text, IntWritable] {
+    // To override the reduce function
     override def reduce(key: Text, values: Iterable[IntWritable], context: Reducer[Text, IntWritable, Text, IntWritable]#Context): Unit = {
       logger.info("Calculate the sum")
       // calculate the sum

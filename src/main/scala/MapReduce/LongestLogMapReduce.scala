@@ -12,12 +12,15 @@ import HelperUtils.{LogFileUtils, CreateLogger, ObtainConfigReference}
 
 import scala.collection.JavaConverters.*
 
+// To find the log message with longest characters present for each instance .
 class LongestLogMapReduce
 
 object LongestLogMapReduce {
 
+  //logger to log the values for the class
   val logger = CreateLogger(classOf[LongestLogMapReduce])
 
+  // To obtain config reference from application.conf
   val config = ObtainConfigReference("logConfig") match {
     case Some(value) => value
     case None => throw new RuntimeException("Cannot obtain a reference to the config data.")
@@ -27,11 +30,15 @@ object LongestLogMapReduce {
 
     val log = new Text()
 
+    // To override the map function
     override def map(key: Object, value: Text, context: Mapper[Object, Text, Text, IntWritable]#Context): Unit = {
       logger.info("Converting the input string into string Array using Regex Space Split")
+      // To split the string input into array
       val stringArray = value.toString.split(config.getString("logConfig.regexSpaceSplit"))
+      // To get the log level present in that position
         val token = stringArray(2)
         val matchString = LogFileUtils.checkRegexPatternMatch("regexPattern", stringArray(5))
+      // To check whether the string matches the regex pattern
         if(! matchString.equals(config.getString("notFound"))) {
           log.set(token)
           val length = stringArray(5).length
@@ -42,6 +49,7 @@ object LongestLogMapReduce {
 
 
   class maxReader extends Reducer[Text,IntWritable,Text,IntWritable] {
+    // To override the reduce function
     override def reduce(key: Text, values: Iterable[IntWritable], context: Reducer[Text, IntWritable, Text, IntWritable]#Context): Unit = {
       logger.info("To find the max value")
       val maximumValue = values.asScala.foldLeft(0)(_ max _.get)

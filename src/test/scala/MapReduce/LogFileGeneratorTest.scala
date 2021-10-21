@@ -11,7 +11,7 @@ import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.{IntWritable, Text}
 import org.apache.hadoop.mapreduce.Mapper
 import org.apache.hadoop.util.ToolRunner
-import org.junit.Assert
+import org.junit.{Assert, Test}
 //import org.hamcrest.MatcherAssert.assertThat
 
 import scala.io.Source.*
@@ -52,9 +52,10 @@ class LogFileGeneratorTest extends AnyFlatSpec with Matchers {
   }
 
 //   To check whether the seperator in the config file is same as the one expected
-  def testConfigurationValues(): Unit ={
-    Assert.assertEquals(" ",",", config.getString("separator"))
-  }
+// @Test
+//  def testConfigurationValues(): Unit ={
+//    Assert.assertEquals(" ",",", config.getString("separator"))
+//  }
 
   // To locate an instance of the pattern in the randomly generated string
   it should "locate an instance of the pattern in the generated string" in {

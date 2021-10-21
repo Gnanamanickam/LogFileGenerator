@@ -170,4 +170,4 @@ The above message matches the regex pattern with two continuous numbers .
 * Configure the steps displayed as required and run the job .
 * On completion run the jar file and check the output folder which will have the output of the mapReduce class which has been executed in the hadoop environment in EMR .
 
-
+Youtube Link : https://youtu.be/0_RzY-82LeQ
